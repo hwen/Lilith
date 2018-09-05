@@ -1,15 +1,23 @@
 const CQHttp = require('cqhttp');
+const schedule = require('node-schedule');
 const config = require('./config.template');
+const utils = require('./utils');
+
+const rule = new schedule.RecurrenceRule();
+
+rule.dayOfWeek = [0, new schedule.Range(1, 6)];
+rule.hour = 20;
+rule.minute = 0;
+
+const randomMes = arr => {
+  return arr[Math.round((Math.random() * arr.length) % arr.length)];
+};
 
 const bot = new CQHttp({
   apiRoot: config.host,
   accessToken: config.token,
   secret: config.secret,
 });
-
-const randomMes = arr => {
-  return arr[(Math.random() * arr.length) % arr.length];
-};
 
 bot.on('request', async ctx => {
   console.log('==== request =====');
@@ -39,9 +47,16 @@ bot.on('notice', async ctx => {
   // 忽略其它事件
 });
 
-// bot.on('message', ctx => {
-//   console.log(ctx);
-// });
+const job = schedule.scheduleJob(rule, () => {
+  config.daily.forEach(item => {
+    bot('send_group_msg_async', {
+      group_id: item.group,
+      message: `现在时间：${utils.formatDate(
+        'YYYY/MM/DD HH:mm:ss'
+      )}\n${randomMes(item.mes)}`,
+    });
+  });
+});
 
 bot.listen(9991, '127.0.0.1', () => {
   console.log('listening 9991');
