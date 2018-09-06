@@ -10,7 +10,9 @@ rule.hour = 20;
 rule.minute = 0;
 
 const randomMes = arr => {
-  return arr[Math.round((Math.random() * arr.length) % arr.length)];
+  const range = arr.length - 1;
+  const randomIdx = Math.round((Math.random() * range) % range);
+  return arr[randomIdx];
 };
 
 const bot = new CQHttp({
