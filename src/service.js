@@ -1,4 +1,10 @@
 const axios = require('axios');
+const dmzjHeaders = {
+  Accept: `*/*`,
+  'Accept-Encoding': 'br, gzip, deflate',
+  'Accept-Language': 'zh-Hans-CN;q=1',
+  'User-Agent': 'Platform/2.5.5(iPhone;iOS 11.4.1; Scale/3.00)',
+};
 
 const yiyan = async () => {
   const url = 'https://v1.hitokoto.cn/';
@@ -11,6 +17,17 @@ const yiyan = async () => {
   };
 };
 
+const checkLuChen = async () => {
+  const url =
+    'https://v3api.dmzj.com/comic/42604.json?channel=ios&version=2.5.5';
+  const resp = await axios.get(url, {
+    header: dmzjHeaders,
+  });
+
+  return resp.data;
+};
+
 module.exports = {
   yiyan,
+  checkLuChen,
 };

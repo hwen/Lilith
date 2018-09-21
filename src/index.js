@@ -40,19 +40,23 @@ bot.on('notice', async ctx => {
   // 忽略其它事件
 });
 
-const dailyMesForGroup = () => {
-  config.daily.forEach(async item => {
-    const mes = await serv.yiyan();
+const sendMesToGroups = mes => {
+  config.groups.forEach(group => {
     bot('send_group_msg_async', {
-      group_id: item.group,
-      message: `现在时间：${utils.formatDate('YYYY/MM/DD HH:mm:ss')}\n${
-        mes.hitokoto
-      }\n${utils.randomMes(item.mes)}`,
+      group_id: group,
+      message: mes,
     });
   });
 };
 
-dailyMesForGroup();
+const dailyMesForGroup = async () => {
+  const mes = await serv.yiyan();
+  sendMesToGroups(
+    `现在时间：${utils.formatDate('YYYY/MM/DD HH:mm:ss')}\n${
+      mes.hitokoto
+    }\n${utils.randomMes(config.favorites)}`
+  );
+};
 
 scheduleRules.forEach(rule => {
   let job = schedule.scheduleJob(rule, () => {
@@ -60,7 +64,38 @@ scheduleRules.forEach(rule => {
   });
 });
 
-bot.listen(9991, '127.0.0.1', () => {
-  console.log('======== listening 9991 ========');
-  console.log('Lilith 为你服务中 φ(゜▽゜*)♪');
+var checkManga = schedule.scheduleJob('30 * * * *', async () => {
+  const resp = await serv.checkLuChen();
+  const lastUpdate = Date.now() - resp.last_updatetime * 1000;
+  const formated = (lastUpdate / (1000 * 60 * 60)).toFixed(1);
+  if (formated < 1.5) {
+    try {
+      // prettier-ignore
+      sendMesToGroups(`
+        【${resp.title}】${utils.get(resp.chapters[0], 'data[0].chapter_title')}更新啦！！\n
+        更新时间：${utils.formatDate('YYYY/MM/DD HH:mm', resp.last_updatetime * 1000)}\n
+        点击数：${resp.hit_num}\n
+        评论数：${resp.comment.comment_count}\n
+        \n
+        === 最新评论 ===\n
+        ${utils.get(resp.comment, 'latest_comment[0].content')}\n
+        by ${utils.get(resp.comment, 'latest_comment[0].nickname')}
+      `);
+    } catch (err) {
+      console.log('[dmzj] err');
+      console.log('===== resp =====');
+      console.log(resp);
+      console.log('===== err =====');
+      console.log(err);
+    }
+  } else {
+    console.log(`【${utils.formatDate('YYYY/MM/DD HH:mm:ss')}】 没有更新...`);
+  }
+});
+
+bot.listen(config.port, '127.0.0.1', () => {
+  console.log(`======== listening ${config.port}========`);
+  // prettier-ignore
+  console.log(`【${utils.formatDate('YYYY/MM/DD HH:mm:ss')}】 Lilith 为你服务中 φ(゜▽゜*)♪`);
+  // dailyMesForGroup();
 });

@@ -15,7 +15,15 @@ function randomMes(arr) {
   return arr[randomIdx];
 }
 
+function get(obj = {}, path = '') {
+  return path
+    .replace(/\[(.+?)\]/g, '.$1')
+    .split('.')
+    .reduce((o, key) => o && o[key], obj);
+}
+
 module.exports = {
   formatDate,
   randomMes,
+  get,
 };
