@@ -1,6 +1,6 @@
 // YYYY/MM/DD HH:mm:ss
 function formatDate(fmt, date) {
-  date = new Date(date) || new Date();
+  date = date ? new Date(date) : new Date();
   var o = {
     'M+': date.getMonth() + 1, // Month
     'D+': date.getDate(), // date
@@ -20,7 +20,7 @@ function formatDate(fmt, date) {
     if (new RegExp('(' + k + ')').test(fmt)) {
       fmt = fmt.replace(
         RegExp.$1,
-        RegExp.$1.length == 1 ? o[k] : ('00' + o[k]).substr(('' + o[k]).length)
+        RegExp.$1.length === 1 ? o[k] : ('00' + o[k]).substr(('' + o[k]).length)
       );
     }
   }
