@@ -74,7 +74,7 @@ var checkManga = schedule.scheduleJob('30 * * * *', async () => {
       sendMesToGroups(`
         【${resp.title}】${utils.get(resp.chapters[0], 'data[0].chapter_title')}更新啦！！\n
         更新时间：${utils.formatDate('YYYY/MM/DD HH:mm', resp.last_updatetime * 1000)}\n
-        点击数：${resp.hit_num}\n
+        订阅数：${resp.subscribe_num}\n
         评论数：${resp.comment.comment_count}\n
         \n
         === 最新评论 ===\n
