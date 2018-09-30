@@ -36,6 +36,7 @@ bot.on('notice', async ctx => {
         groupInfo.group_name
       }看板娘莉莉丝 Hi~ o(*￣▽￣*)ブ`,
     });
+    console.log(`【${utils.formatDate('YYYY/MM/DD HH:mm:ss')}】${name} 加群`);
   }
   // 忽略其它事件
 });
