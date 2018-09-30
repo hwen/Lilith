@@ -56,6 +56,9 @@ const dailyMesForGroup = async () => {
       mes.hitokoto
     }\n${utils.randomMes(config.favorites)}`
   );
+  console.log(
+    `现在时间：${utils.formatDate('YYYY/MM/DD HH:mm:ss')}\n${mes.hitokoto}`
+  );
 };
 
 scheduleRules.forEach(rule => {
@@ -65,31 +68,29 @@ scheduleRules.forEach(rule => {
 });
 
 var checkManga = schedule.scheduleJob('30 * * * *', async () => {
-  const resp = await serv.checkLuChen();
-  const lastUpdate = Date.now() - resp.last_updatetime * 1000;
-  const formated = (lastUpdate / (1000 * 60 * 60)).toFixed(1);
-  if (formated < 1.5) {
-    try {
+  try {
+    const resp = await serv.checkLuChen();
+    const lastUpdate = Date.now() - resp.last_updatetime * 1000;
+    const formated = (lastUpdate / (1000 * 60 * 60)).toFixed(1);
+    if (formated < 1.5) {
       // prettier-ignore
-      sendMesToGroups(`
-        【${resp.title}】${utils.get(resp.chapters[0], 'data[0].chapter_title')}更新啦！！\n
-        更新时间：${utils.formatDate('YYYY/MM/DD HH:mm', resp.last_updatetime * 1000)}\n
-        订阅数：${resp.subscribe_num}\n
-        评论数：${resp.comment.comment_count}\n
-        \n
-        === 最新评论 ===\n
-        ${utils.get(resp.comment, 'latest_comment[0].content')}\n
-        by ${utils.get(resp.comment, 'latest_comment[0].nickname')}
-      `);
-    } catch (err) {
-      console.log('[dmzj] err');
-      console.log('===== resp =====');
-      console.log(resp);
-      console.log('===== err =====');
-      console.log(err);
+      let news = `【${resp.title}】${utils.get(resp.chapters[0], 'data[0].chapter_title')}更新啦！！\n`;
+      // prettier-ignore
+      news += `更新时间：${utils.formatDate('YYYY/MM/DD HH:mm', resp.last_updatetime * 1000)}\n`;
+      news += `订阅数：${resp.subscribe_num}\n`;
+      news += `评论数：${resp.comment.comment_count}\n\n`;
+      news += `=== 最新评论 ===\n`;
+      news += `${utils.get(resp.comment, 'latest_comment[0].content')}\n`;
+      news += `by ${utils.get(resp.comment, 'latest_comment[0].nickname')}`;
+
+      sendMesToGroups(news);
+    } else {
+      console.log(`【${utils.formatDate('YYYY/MM/DD HH:mm:ss')}】 没有更新...`);
     }
-  } else {
-    console.log(`【${utils.formatDate('YYYY/MM/DD HH:mm:ss')}】 没有更新...`);
+  } catch (err) {
+    console.log('[dmzj] err');
+    console.log('===== err =====');
+    console.log(err);
   }
 });
 
