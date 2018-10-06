@@ -17,7 +17,7 @@ const yiyan = async () => {
   };
 };
 
-const checkLuChen = async () => {
+const luchen = async () => {
   const url =
     'https://v3api.dmzj.com/comic/42604.json?channel=ios&version=2.5.5';
   const resp = await axios.get(url, {
@@ -27,7 +27,18 @@ const checkLuChen = async () => {
   return resp.data;
 };
 
+const ayanashi = async () => {
+  const url =
+    'https://v3api.dmzj.com/comic/45941.json?channel=ios&version=2.5.5';
+  const resp = await axios.get(url, {
+    header: dmzjHeaders,
+  });
+
+  return resp.data;
+};
+
 module.exports = {
   yiyan,
-  checkLuChen,
+  luchen,
+  ayanashi,
 };
