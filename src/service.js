@@ -1,5 +1,6 @@
 const axios = require('axios');
 const utils = require('./utils');
+
 const dmzjHeaders = {
   Accept: `*/*`,
   'Accept-Encoding': 'br, gzip, deflate',
@@ -15,7 +16,7 @@ const yiyan = async () => {
    * d - 小说
    * e - 原创
    */
-  const type = utils.randomMes(['a', 'b', 'c']);
+  const type = utils.randomMes(['a', 'b']);
   const url = `https://v1.hitokoto.cn/?c=${type}`;
   const resp = await axios.get(url);
   if (resp.data) {

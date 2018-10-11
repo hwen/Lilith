@@ -5,6 +5,7 @@ module.exports = {
   secret: '',
   people: [],
   groups: [''],
+  likeUsers: [''],
   favorites: [
     '呼 (_　_)。゜zｚＺ',
     '吨吨吨 阿勒 好像漏电了 www',

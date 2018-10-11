@@ -8,10 +8,27 @@ const serv = require('./service');
 module.exports = bot => {
   const sendMesToGroups = mes => {
     config.groups.forEach(group => {
-      bot('send_group_msg_async', {
+      bot('send_group_msg', {
         group_id: group,
         message: mes,
-      });
+      }).catch(utils.handleErr);
+    });
+  };
+  const likeWho = () => {
+    const times = 1;
+    config.likeUsers.forEach(async user => {
+      console.log(`【like】 ${user} => ${times}`);
+      try {
+        await bot('send_like', {
+          user_id: Number(user),
+          times: times,
+        });
+      } catch (err) {
+        if (err.retcode === -99) {
+          return console.log(`【send_like 错误】非专业版没有权限...`);
+        }
+        utils.handleErr(err);
+      }
     });
   };
 
@@ -64,6 +81,7 @@ module.exports = bot => {
   scheduleRules.forEach(rule => {
     let job = schedule.scheduleJob(rule, () => {
       dailyMesForGroup();
+      likeWho();
     });
   });
 
@@ -74,6 +92,7 @@ module.exports = bot => {
 
   // 重启时，立即检查一次
   mangaJobs(['luchen', 'ayanashi']);
-
+  // dailyMesForGroup();
+  // likeWho();
   // job end
 };

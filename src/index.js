@@ -39,13 +39,11 @@ bot.on('notice', async ctx => {
   // 忽略其它事件
 });
 
-jobs(bot);
-
 bot.listen(config.port, '127.0.0.1', () => {
   console.log(`======== listening ${config.port}========`);
   // prettier-ignore
   console.log(`【${utils.formatDate('YYYY/MM/DD HH:mm:ss')}】 Lilith 为你服务中 φ(゜▽゜*)♪`);
-  // dailyMesForGroup();
+  jobs(bot);
 });
 
 module.exports = bot;

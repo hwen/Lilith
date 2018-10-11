@@ -40,8 +40,14 @@ function get(obj = {}, path = '') {
     .reduce((o, key) => o && o[key], obj);
 }
 
+function handleErr(err) {
+  console.log(`==== 【err】 ====`);
+  console.log(err);
+}
+
 module.exports = {
   formatDate,
   randomMes,
   get,
+  handleErr,
 };
